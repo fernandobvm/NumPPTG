@@ -24,10 +24,10 @@ alpha = 1; %mass distribution model, alpha = 0 (uniform) alpha = 1 (slug model)
 m_bit = 10e-6;
 mu = 1.2566e-6;
 
-tspan = [0 2.5e-6];
+tspan = [0 0.5];
 y0 = [0,0,0,0];
-MaxStep = 1e-8;
-opts = odeset('RelTol',1e-6,'AbsTol',1e-8,'MaxStep', MaxStep);
+MaxStep = 1e-6;
+opts = odeset('RelTol',1e-4,'AbsTol',1e-6,'MaxStep', MaxStep);
 
 global iter
 global teste
@@ -40,6 +40,7 @@ iter = 1;
 I = y(:,4);
 V = V0 - y(:,2)/C;
 Ec = C*V.^2/2;
+Ekinetic = m_bit*y(:,3).*y(:,3)/2;
 
 figure
 yyaxis left
@@ -58,7 +59,8 @@ figure
 %Eohm = trapz(t(1:5),Req*y(1:5,4).*y(1:5,4));
 plot(t,Eohm)
 hold on
-plot(t,Ec)
+plot(t,Ec)  
+plot(t,Ekinetic)
 
 function y = ppt1(t,y0,V0,C,Req,mu,h,w,m_bit,L0,delta,MaxStep)
     global iter
@@ -82,7 +84,8 @@ function y = ppt(t,y0,V0,C,Req,mu,h,w,m_bit,Lc,Le,delta)
     y = zeros(4,1);
     y(1) = y0(3);
     y(2) = y0(4);
-    y(3) = Lpe*y0(4)*y0(4)/(2*m_bit);
+%     y(3) = Lpe*y0(4)*y0(4)/(2*m_bit);
+    y(3) = mu*h*y0(4)*y0(4)/(2*m_bit*w);
     y(4) = (-y0(2)/C - mu*h*y0(3)*y0(4)/w - Req*y0(4) + V0)/(L);
 
 end
