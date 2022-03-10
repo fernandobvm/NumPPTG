@@ -21,7 +21,7 @@ w = 1e-2;
 l = 0.6e-2;
 delta = 0; %thin current sheet
 alpha = 1; %mass distribution model, alpha = 0 (uniform) alpha = 1 (slug model)
-m_bit = 10e-6;
+m_bit = 10e-9;
 mu = 1.2566e-6;
 
 tspan = [0 0.5];
