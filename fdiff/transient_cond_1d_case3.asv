@@ -62,6 +62,9 @@ for i = 2:length(t)
     delta_hs = 0.001;
     rho_hs = 7860;
     C_hs = 500;
+    
+    T(1,i) = T(1,i-1) + a*(t(i)-t(i-1))/(x(2)-x(1))
+end
 T'
 
 T_a = zeros(size(T));

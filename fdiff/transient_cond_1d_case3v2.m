@@ -21,10 +21,10 @@ end
 % alfa = 9.7e-5;
 alfa = 1e-4;
 
-tf = 25;
+tf = 2;
 steps = 100;
-% dt = tf/steps;
-dt = (min(dx))^2/(2*alfa);  %criterio de estabildiade - máximo dt
+dt = tf/steps;
+% dt = (min(dx))^2/(2*alfa);  %criterio de estabildiade - máximo dt
 t = 0:dt/2:tf;
 
 
@@ -34,14 +34,14 @@ rho = 2.3e3;
 % Fo = d;
 
 
-T0 = 300;
+T0 = 0;
 q = 40000;
 Twall = 0;
 T = ones(m,length(t))*T0;
 % T(1,:) = 0;
 % T(m,:) = 0;
 
-figure
+% figure
 % for i= 2:length(t)
 %     for j=2:m-1
 %         d = alfa*(t(i)-t(i-1))/(x(j)-x(j-1))^2;
@@ -56,27 +56,41 @@ figure
 %     pause(0.05)
 % end
 T_hs = 500;
-T(1,1) = T_hs;
-for i = 2:length(t)
-    k_c = 0.2477;
-    delta_hs = 0.001;
-    rho_hs = 7860;
-    C_hs = 500;
-T'
+T(1,:) = T_hs;
+x(2)-x(1);
+k_c = 0.2477;
+delta_hs = 0.001;
+rho_hs = 7860;
+C_hs = 500;
+% dx = x(2)-x(1);
+dx = 5*10^-5;
 
-T_a = zeros(size(T));
-% x = L - x;
-for i=2:length(t)
-        T_a(:,i) = (T0-Twall).*erf(x./(2*sqrt(alfa.*t(i)))) + Twall;
+for i = 2:length(t)    
+    a = -k_c/(delta_hs*C_hs*rho_hs);
+    r = (2*a*(t(i)-t(i-1))/dx);
+    
+    T(1,i) = T(1,i-1) + r*(-T(2,i-1) + T(1,i-1));
 end
-figure
-plot(x,T_a(:,10))
+
+T(1,:)'
+plot(t,T(1,:))
+T1 = (T_hs - T0)*exp(2*a*t/dx) + T0;
 hold on
-scatter(x,T(:,10),'x')
-xlabel('Comprimento do propelente (m)')
-ylabel('Temperatura')
-title('Perfil de Temperatura')
-legend('Analitic', 'Numerical')
+scatter(t,T1)
+
+% T_a = zeros(size(T));
+% % x = L - x;
+% for i=2:length(t)
+%         T_a(:,i) = (T0-Twall).*erf(x./(2*sqrt(alfa.*t(i)))) + Twall;
+% end
+% figure
+% plot(x,T_a(:,10))
+% hold on
+% scatter(x,T(:,10),'x')
+% xlabel('Comprimento do propelente (m)')
+% ylabel('Temperatura')
+% title('Perfil de Temperatura')
+% legend('Analitic', 'Numerical')
 
 % figure
 % p1 = plot(x,T_a(:,10),'b',x,T(:,10),'x')
@@ -91,6 +105,6 @@ legend('Analitic', 'Numerical')
 
 
 
-lT_a = T_a(:,10);
-lT = T(:,10);
+% lT_a = T_a(:,10);
+% lT = T(:,10);
 % save('data/m80_7-8_dt1-10_t=10.mat','lT_a','lT')
