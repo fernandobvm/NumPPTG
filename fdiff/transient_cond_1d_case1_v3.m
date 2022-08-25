@@ -3,7 +3,7 @@ close all;
 clc;
 
 tic;
-m = 1000;
+m = 1600;
 
 L = 1;
 dx = L/(m-1);
@@ -26,7 +26,7 @@ tf = 5;
 steps = 100;
 % dt = tf/steps;
 dt = (min(dx))^2/(2*alfa);  %criterio de estabildiade - máximo dt
-t = 0:dt/20:tf;
+t = 0:dt/2:tf;
 
 
 k = 0.3;
@@ -43,19 +43,36 @@ T = ones(m,length(t))*T0;
 % T(m,:) = 0;
 
 % figure
-for i= 2:length(t)
-    for j=2:m-1
-        d = alfa*(t(i)-t(i-1))/(x(j)-x(j-1))^2;
-        T(j,i) = T(j,i-1) + d*(T(j-1,i-1) + T(j+1,i-1) - 2*T(j,i-1));
-    end
-%     T(1,i) = T(1,i-1) + d*(T(2,i-1) - 2*T(1,i-1));
-    d = alfa*(t(i)-t(i-1))/(x(m)-x(m-1))^2;
-    T(m,i) = T(m,i-1) + d*(T(m-1,i-1) - 2*T(m,i-1) + T(m-1,i-1) + 2*(x(m)-x(m-1))*q/k);
+% for i= 2:length(t)
+%     for j=2:m-1
+%         d = alfa*(t(i)-t(i-1))/(x(j)-x(j-1))^2;
+%         T(j,i) = T(j,i-1) + d*(T(j-1,i-1) + T(j+1,i-1) - 2*T(j,i-1));
+%     end
+% %     T(1,i) = T(1,i-1) + d*(T(2,i-1) - 2*T(1,i-1));
+%     d = alfa*(t(i)-t(i-1))/(x(m)-x(m-1))^2;
+%     T(m,i) = T(m,i-1) + d*(T(m-1,i-1) - 2*T(m,i-1) + T(m-1,i-1) + 2*(x(m)-x(m-1))*q/k);
 %     plot(T(:,i))
 %     title(['t = ', num2str(t(i)), ' s'])
 %     pause(0.05)
-end
+% end
 % T'
+
+
+A = eye(m);
+B = ones(m,length(t))*T0;
+i = 2:length(t);
+j = 2:m-1;
+d = (alfa.*(t(i)-t(i-1))'*(1./(x(j)-x(j-1)).^2))';
+B1 = T(j,i-1) + d.*(T(j-1,i-1) + T(j+1,i-1) - 2*T(j,i-1)); 
+d = alfa*(t(i)-t(i-1))/(x(m)-x(m-1))^2;
+B2 = T(m,i-1) + d.*(T(m-1,i-1) - 2*T(m,i-1) + T(m-1,i-1) + 2*(x(m)-x(m-1))*q/k);
+B = [B(1,2:end); B1; B2];
+T = A\B;
+
+% for k = 1:length(t)-1
+%     T(:,k) = A\B(:,k);
+% end
+
 
 T_a = zeros(size(T));
 x = L - x;
@@ -71,7 +88,7 @@ ylabel('Temperatura')
 title('Perfil de Temperatura')
 legend('Analitic', 'Numerical')
 
-toc
+toc;
 lT_a = T_a(:,10);
 lT = T(:,10);
 % save('data/m80_7-8_dt1-10_t=10.mat','lT_a','lT')

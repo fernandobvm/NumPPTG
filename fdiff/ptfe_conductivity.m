@@ -15,5 +15,5 @@ function k = ptfe_conductivity(T)
     else
         k = k_h +(k_h - k_ma).*(T-T_m)/(T_h - T_m);
     end
-%     k = 0.2477 + T*3.1717*10^-4;
+    k = 0.2477 + T*3.1717*10^-4;
 end

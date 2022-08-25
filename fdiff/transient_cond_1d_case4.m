@@ -1,14 +1,15 @@
 clear all;
 close all;
 clc;
+tic
 
-m = 160;
+m = 800;
 
 L = 1;
 dx = L/(m-1);
 % x = 0:dx:L;
-x1 = linspace(4*L/5,L,7*m/8+1);
-x2 = linspace(0,4*L/5,m/8);
+x1 = linspace(4.8*L/5,L,7*m/8+1);
+x2 = linspace(0,4.8*L/5,m/8);
 x = [x2(1:end-1), x1];
 
 dx = zeros(1,m-1);
@@ -35,7 +36,7 @@ steps = 100;
 % dt = tf/steps;
 %pensar melhor como lidar com o criterio de estabilidade 
 %considerando o alfa variavel
-alfa0 = 100*ptfe_conductivity(T0)/(ptfe_density(T0)*ptfe_specheat(T0));
+alfa0 = 1000*ptfe_conductivity(T0)/(ptfe_density(T0)*ptfe_specheat(T0));
 dt = (min(dx))^2/(2*alfa0);  %criterio de estabildiade - máximo dt
 t = 0:dt/2:tf;
 
@@ -43,7 +44,7 @@ T = ones(m,length(t))*T0;
 % T(1,:) = 0;
 % T(m,:) = 0;
 
-figure
+% figure
 for i= 2:length(t)
     for j=2:m-1
         alfa = ptfe_conductivity(T(j,i-1))/(ptfe_density(T(j,i-1))*ptfe_specheat(T(j,i-1)));
@@ -53,12 +54,12 @@ for i= 2:length(t)
 %     T(1,i) = T(1,i-1) + d*(T(2,i-1) - 2*T(1,i-1));
     d = (ptfe_conductivity(T(m,i-1))/(ptfe_density(T(m,i-1))*ptfe_specheat(T(m,i-1))))*(t(i)-t(i-1))/(x(m)-x(m-1))^2;
     T(m,i) = T(m,i-1) + d*(T(m-1,i-1) - 2*T(m,i-1) + T(m-1,i-1) + 2*(x(m)-x(m-1))*q/(ptfe_conductivity(T(m,i-1))));
-    plot(x,T(:,i))
-    title(['t = ', num2str(t(i)), ' s'])
-    pause(0.05)
+%     plot(x,T(:,i))
+%     title(['t = ', num2str(t(i)), ' s'])
+%     pause(0.05)
 end
-T'
-
+T';
+toc
 % T_a = zeros(size(T));
 % x = L - x;
 % for i=2:length(t)
